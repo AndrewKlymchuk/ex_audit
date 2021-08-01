@@ -45,7 +45,7 @@ defmodule ExAudit.Repo do
       @behaviour ExAudit.Repo
 
       # These are the Ecto.Repo functions that ExAudit "extends" but these are not
-      # marked as overridable in Ecto.Repo. (ecto v3.4.2)
+      # marked as overridable in Ecto.Repo. (ecto v3.6.2)
       defoverridable(
         insert: 2,
         update: 2,
@@ -99,7 +99,7 @@ defmodule ExAudit.Repo do
             __MODULE__,
             get_dynamic_repo(),
             struct,
-            opts
+            with_default_options(:insert, opts)
           )
         else
           super(struct, opts)
@@ -112,7 +112,7 @@ defmodule ExAudit.Repo do
             __MODULE__,
             get_dynamic_repo(),
             struct,
-            opts
+            with_default_options(:update, opts)
           )
         else
           super(struct, opts)
@@ -125,7 +125,7 @@ defmodule ExAudit.Repo do
             __MODULE__,
             get_dynamic_repo(),
             changeset,
-            opts
+            with_default_options(:insert_or_update, opts)
           )
         else
           super(changeset, opts)
@@ -138,7 +138,7 @@ defmodule ExAudit.Repo do
             __MODULE__,
             get_dynamic_repo(),
             struct,
-            opts
+            with_default_options(:delete, opts)
           )
         else
           super(struct, opts)
@@ -151,7 +151,7 @@ defmodule ExAudit.Repo do
             __MODULE__,
             get_dynamic_repo(),
             struct,
-            opts
+            with_default_options(:insert, opts)
           )
         else
           super(struct, opts)
@@ -164,7 +164,7 @@ defmodule ExAudit.Repo do
             __MODULE__,
             get_dynamic_repo(),
             struct,
-            opts
+            with_default_options(:update, opts)
           )
         else
           super(struct, opts)
@@ -177,7 +177,7 @@ defmodule ExAudit.Repo do
             __MODULE__,
             get_dynamic_repo(),
             changeset,
-            opts
+            with_default_options(:insert_or_update, opts)
           )
         else
           super(changeset, opts)
@@ -190,16 +190,12 @@ defmodule ExAudit.Repo do
             __MODULE__,
             get_dynamic_repo(),
             struct,
-            opts
+            with_default_options(:delete, opts)
           )
         else
           super(struct, opts)
         end
       end
-
-      def default_options(_operation), do: []
-
-      defoverridable(default_options: 1)
 
       defoverridable(child_spec: 1)
 
@@ -237,6 +233,4 @@ defmodule ExAudit.Repo do
   """
   @callback revert(version :: struct, opts :: list) ::
               {:ok, struct} | {:error, changeset :: Ecto.Changeset.t()}
-
-  @callback default_options(operation :: atom) :: keyword
 end
